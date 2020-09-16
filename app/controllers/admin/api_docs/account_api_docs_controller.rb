@@ -12,6 +12,10 @@ class Admin::ApiDocs::AccountApiDocsController < Admin::ApiDocs::BaseController
 
   before_action :redirect_to_service_scope, if: :service, only: %i[edit preview]
 
+  def index
+    @api_docs_services = api_docs_collection.page(params[:page])
+  end
+
   private
 
   def redirect_to_service_scope
@@ -27,10 +31,20 @@ class Admin::ApiDocs::AccountApiDocsController < Admin::ApiDocs::BaseController
   end
 
   def service
-    api_docs_service.service
+    return if api_docs_service.owner_type != 'Service'
+
+    api_docs_service.owner
+  end
+
+  def find_api_docs
+    @api_docs_service = api_docs_collection.find_by_id_or_system_name!(params[:id])
   end
 
   def current_scope
     current_account
+  end
+
+  def api_docs_collection
+    current_scope.all_api_docs
   end
 end

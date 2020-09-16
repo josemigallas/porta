@@ -23,7 +23,7 @@ class Admin::ApiDocs::AccountApiDocsControllerTest < ActionDispatch::Integration
       get admin_api_docs_services_path
       assert_account_active_docs_menus
 
-      assert_same_elements provider.api_docs_services.pluck(:id), assigns(:api_docs_services).map(&:id)
+      assert_same_elements provider.all_api_docs.pluck(:id), assigns(:api_docs_services).map(&:id)
     end
 
     test 'preview under the service scope when there is a service' do
@@ -50,12 +50,14 @@ class Admin::ApiDocs::AccountApiDocsControllerTest < ActionDispatch::Integration
         assert_response :redirect
       end
 
-      api_docs_service = provider.api_docs_services.last!
+      api_docs_service = provider.all_api_docs.last!
       assert_equal 'smart_service', api_docs_service.system_name
-      assert_equal service.id, api_docs_service.service_id
+      assert_equal service.id, api_docs_service.owner_id
+      assert_equal 'Service', api_docs_service.owner_type
       create_params[:api_docs_service].each do |name, value|
         expected_value = %i[published skip_swagger_validations].include?(name) ? (value == '1') : value
-        assert_equal expected_value, api_docs_service.public_send(name)
+        attribute_name = name == :service_id ? :owner_id : name
+        assert_equal expected_value, api_docs_service.public_send(attribute_name)
       end
       assert_equal provider.id, api_docs_service.account_id
     end
@@ -68,7 +70,8 @@ class Admin::ApiDocs::AccountApiDocsControllerTest < ActionDispatch::Integration
       api_docs_service.reload
       update_params[:api_docs_service].each do |name, value|
         expected_value = %i[published skip_swagger_validations].include?(name) ? (value == '1') : value
-        assert_equal expected_value, api_docs_service.public_send(name)
+        attribute_name = name == :service_id ? :owner_id : name
+        assert_equal expected_value, api_docs_service.public_send(attribute_name)
       end
       assert_equal provider.id, api_docs_service.account_id
     end
@@ -252,7 +255,7 @@ class Admin::ApiDocs::AccountApiDocsControllerTest < ActionDispatch::Integration
   end
 
   def api_docs_service
-    current_account.api_docs_services.last!
+    current_account.all_api_docs.last!
   end
 
   def current_account

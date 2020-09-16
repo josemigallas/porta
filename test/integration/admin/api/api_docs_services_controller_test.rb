@@ -31,7 +31,7 @@ class Admin::Api::ApiDocsServicesControllerTest < ActionDispatch::IntegrationTes
     setup do
       @provider = FactoryBot.create(:provider_account)
       @service = @provider.default_service
-      @api_docs_service = FactoryBot.create(:api_docs_service, account: @provider, service: nil)
+      @api_docs_service = FactoryBot.create(:api_docs_service, owner: @provider, account: @provider, service: nil)
     end
 
     attr_reader :provider, :service, :api_docs_service
@@ -43,12 +43,14 @@ class Admin::Api::ApiDocsServicesControllerTest < ActionDispatch::IntegrationTes
         assert_response :created
       end
 
-      api_docs_service = provider.api_docs_services.last!
+      api_docs_service = provider.all_api_docs.last!
       assert_equal 'smart_service', api_docs_service.system_name
-      assert_equal service.id, api_docs_service.service_id
+      assert_equal service.id, api_docs_service.owner_id
+      assert_equal 'Service', api_docs_service.owner_type
       create_params[:api_docs_service].each do |name, value|
         expected_value = %i[published skip_swagger_validations].include?(name) ? (value == '1') : value
-        assert_equal expected_value, api_docs_service.public_send(name)
+        attribute_name = name == :service_id ? :owner_id : name
+        assert_equal expected_value, api_docs_service.public_send(attribute_name)
       end
       assert_equal provider.id, api_docs_service.account_id
     end
@@ -60,7 +62,8 @@ class Admin::Api::ApiDocsServicesControllerTest < ActionDispatch::IntegrationTes
       api_docs_service.reload
       update_params[:api_docs_service].each do |name, value|
         expected_value = %i[published skip_swagger_validations].include?(name) ? (value == '1') : value
-        assert_equal expected_value, api_docs_service.public_send(name)
+        attribute_name = name == :service_id ? :owner_id : name
+        assert_equal expected_value, api_docs_service.public_send(attribute_name)
       end
       assert_equal provider.id, api_docs_service.account_id
     end

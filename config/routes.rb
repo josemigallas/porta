@@ -605,6 +605,7 @@ without fake Core server your after commit callbacks will crash and you might ge
       end
 
       resources :active_docs, :controller => 'api_docs_services', except: %i[new edit]
+      resources :backend_api_active_docs, controller: 'api_docs_backend_apis', only: [:index, :update, :create, :destroy]
 
       resources :policies, only: [:index]
 
