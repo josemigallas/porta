@@ -14,6 +14,7 @@ DEFAULT_JS_DRIVER = :headless_chrome
 Capybara.default_driver = :rack_test
 Capybara.javascript_driver = DEFAULT_JS_DRIVER
 Capybara.default_selector    = :css
+Capybara.disable_animation = true
 
 # see http://www.elabs.se/blog/60-introducing-capybara-2-1
 Capybara.configure do |config|
