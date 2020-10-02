@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 When /^I want to go to (.+)$/ do |page|
   @want_path = path_to(page)
 end
 
 Then /^I should get access denied$/ do
   raise "You must call 'I want to go to ....' before calling this step" unless @want_path
+
   requests = inspect_requests do
     visit @want_path
   end
@@ -23,7 +26,6 @@ When /^I request the url of the '([^\']*)' page then I should see a "([^"]*)" ex
   -> { visit path_to("the #{page} page") }
     .should raise_error(e.constantize)
 end
-
 
 #TODO: dry this with the other steps
 Then /^I request the url of the (page "[^\"]*") an exception should be raised$/ do |page|

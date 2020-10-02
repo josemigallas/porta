@@ -25,4 +25,3 @@ end
 Then /^I should see captcha check fail$/ do
   page.should have_content('Word verification response is incorrect, please try again.')
 end
-

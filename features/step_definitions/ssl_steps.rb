@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 When /^I switch to non-secure version of the same page$/ do
   insecure_url = current_url.gsub(/^https/, 'http')

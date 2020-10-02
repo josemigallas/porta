@@ -1,5 +1,7 @@
-Given /^(provider "[^\"]*") is requiring strong passwords$/ do |provider|
-  provider.settings.update_attribute :strong_passwords_enabled, true
+# frozen_string_literal: true
+
+Given "{provider} is requiring strong passwords" do |provider|
+  provider.settings.update!(strong_passwords_enabled: true)
 end
 
 Then /^I should see the error that the password is too weak$/ do

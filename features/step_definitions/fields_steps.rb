@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Then /^fields should be required:$/ do |table|
   table.rows.each do |row|
     field = row.first
@@ -21,9 +23,9 @@ Then /^I should not see error in fields:$/ do |table|
 end
 
 Then /^I should see "([^"]*)" in the "([^"]*)" field$/ do |text, field|
-   has_xpath?("//tr//th[text() = '#{field}']/following-sibling::td[normalize-space(text()) = '#{text}']")
+  has_xpath?("//tr//th[text() = '#{field}']/following-sibling::td[normalize-space(text()) = '#{text}']")
 end
 
 Then /^I should see "([^"]*)" in the "([^"]*)" field in the list$/ do |text, field|
-   has_xpath?("//dl//dt[text() = '#{field}']/following-sibling::dd[normalize-space(text()) = '#{text}']")
+  has_xpath?("//dl//dt[text() = '#{field}']/following-sibling::dd[normalize-space(text()) = '#{text}']")
 end

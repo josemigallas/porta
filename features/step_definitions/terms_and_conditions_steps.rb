@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 When /^I do not agree to the terms and conditions$/ do
   uncheck "I agree to the terms and conditions to sign up"

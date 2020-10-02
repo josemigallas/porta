@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given /^((?:buyer|provider) "[^\"]*") has last digits of credit card number "([^\"]*)" and expiration date (.*)$/ do |account, partial_number, expiration_date|
   account.credit_card_partial_number = partial_number
   account.credit_card_auth_code = 'valid_code'
@@ -5,14 +7,13 @@ Given /^((?:buyer|provider) "[^\"]*") has last digits of credit card number "([^
   account.save!
 end
 
-
 Given /^buyer "([^\"]*)" has valid credit card(?: with (no money|lots of money))?(?: details)?$/ do |buyer_name,balance|
-  buyer = Account.find_by_org_name!(buyer_name)
+  buyer = Account.find_by!(org_name: buyer_name)
 
   buyer.credit_card_expires_on_year = 2.years.from_now.year
   buyer.credit_card_expires_on_month = 2.years.from_now.month
 
-  balance = (balance == 'no money') ? '2' : '1'
+  balance = balance == 'no money' ? '2' : '1'
   buyer.credit_card_auth_code = "valid_if_ends_with_one_#{balance}"
 
   buyer.save!
@@ -26,9 +27,8 @@ Given /^the payment gateway will fail on (authorize|store)$/ do |operation|
   ActiveMerchant::Billing::BogusGateway.will_fail!(operation)
 end
 
-
 When /^I select ("[^\"]*") from Country/ do |country|
-  step %{I select "#{country}" from "account_billing_address_country"}
+  step %(I select "#{country}" from "account_billing_address_country")
 end
 
 Then /^I should see the legal terms link linking to path "([^\"]*)"$/ do |path|
@@ -43,7 +43,7 @@ Then /^I should see the refunds link linking to path "([^\"]*)"$/ do |path|
   assert find("#refunds-link")[:href] =~ /#{path}\Z/
 end
 
-Given /^(provider "[^"]*") manages payments with "([^"]*)"$/ do |provider, payment_gateway_type|
+Given "{provider} manages payments with {string}" do |provider, payment_gateway_type|
   provider.payment_gateway_type = payment_gateway_type.to_sym
   provider.save!
 end
@@ -54,10 +54,14 @@ Given /^the provider has unconfigured payment gateway$/ do
   @provider.save!
 end
 
-Given /^(provider ".+?") has testing credentials for braintree$/ do |provider|
+Given "{provider} has testing credentials for braintree" do |provider|
   PaymentGateways::BrainTreeBlueCrypt.any_instance.stubs(:find_customer).returns(nil)
   provider.payment_gateway_type = :braintree_blue
-  provider.payment_gateway_options = {:public_key => 'AnY-pUbLiC-kEy', :merchant_id => 'my-payment-gw-mid', :private_key => 'a1b2c3d4e5'}
+  provider.payment_gateway_options = {
+    public_key: 'AnY-pUbLiC-kEy',
+    merchant_id: 'my-payment-gw-mid',
+    private_key: 'a1b2c3d4e5'
+  }
   provider.save!
 end
 

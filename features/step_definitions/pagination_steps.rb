@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 
 Then /^I should see (\d+) pages$/ do |count|
-  links = within(".pagination") do
+  links = within ".pagination" do
     all("a:not(.next_page), em.current")
   end
   assert links.present?, "No pagination found"

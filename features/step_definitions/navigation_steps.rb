@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 When /^I navigate to the sent invitations page$/ do
   click_link "Account"
   click_link "Users"
@@ -42,7 +44,6 @@ end
 When /^I navigate to the dashboard$/ do
   click_link "Dashboard"
 end
-
 
 When /^I navigate to the plans admin page$/ do
   click_link "Dashboard"

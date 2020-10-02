@@ -1,18 +1,19 @@
+# frozen_string_literal: true
 
-Given /^(provider "[^"]*") has config value "([^"]*)" set to (true|false)$/ do |provider, name, value|
+Given "{provider} has config value {string} set to true/false" do |provider, name|
   raise 'Use specific settings step!'
 end
 
-Given /^(provider "[^"]*") has signup (enabled|disabled)$/ do |provider, value|
-  if value == 'enabled'
+Given "{provider} has signup {enabled}" do |provider, enabled|
+  if enabled
     provider.enable_signup!
   else
     provider.disable_signup!
   end
 end
 
-Given /^(provider "[^"]*") has multiple applications (enabled|disabled)$/ do |provider, value|
-  if value == 'enabled'
+Given "{provider} has multiple applications {enabled}" do |provider, enabled|
+  if enabled
     provider.settings.allow_multiple_applications!
     provider.settings.show_multiple_applications!
   elsif provider.settings.can_deny_multiple_applications?
@@ -20,23 +21,19 @@ Given /^(provider "[^"]*") has multiple applications (enabled|disabled)$/ do |pr
   end
 end
 
-Given /^the provider has multiple applications (enabled|disabled)$/ do |value|
-  step %(provider "#{provider_or_master_name}" has multiple applications #{value})
+Given "the provider has multiple applications {enabled}" do |enabled|
+  step %(provider "#{provider_or_master_name}" has multiple applications #{enabled})
 end
 
-Given /^provider "([^"]*)" has Browser CMS (activated|deactivated)$/ do |provider, value|
-  if value == 'deactivated'
-    raise 'BCMS cannot be deactivated!'
-  end
+Given "{provider} has Browser CMS {activated}" do |provider, activated|
+  raise 'BCMS cannot be deactivated!' unless activated
 end
 
-
-Given /^(provider "[^\"]*") uses backend (?:v(\d+)|(oauth)) in his default service$/ do |provider, version,oauth|
+Given "{provider} uses backend {backend_version} in his default service" do |provider, backend_version|
   service = provider.default_service
-  service.backend_version = oauth || version
+  service.backend_version = backend_version
   service.save!
 end
-
 
 When /^I press "([^"]*)" for config value "([^"]*)"$/ do |label, name|
   widget = find(%(table#configs th:contains("#{name}") ~ td button:contains("#{label}")))
@@ -59,15 +56,16 @@ When /^I select "([^"]*)" for config value "([^"]*)"$/ do |value, name|
   field.find(%(option:contains("#{value}"))).select_option
 end
 
-Then /^(provider "[^"]*") should have config value "([^"]*)" set to "([^"]*)"$/ do |provider, name, value|
+Then "{provider} should have config value {string} set to {string}" do |provider, name, value|
   assert_equal value, provider.config[name]
 end
 
-Then /^(provider "[^"]*") should have config value "([^"]*)" set to (true|false)$/ do |provider, name, value|
+# Then "{provider} should have config value {string} set/unset") # Suggestion
+Then "{provider} should have config value {string} set to {word}" do |provider, name, value|
   assert_equal (value == 'true'), provider.config[name]
 end
 
-Then /^(provider "[^"]*") should not have config value "([^"]*)"$/ do |provider, name|
+Then "{provider} should not have config value {string}" do |provider, name|
   assert_nil provider.config[name]
 end
 
@@ -109,8 +107,7 @@ Then /^I should not see button "([^"]*)" for config value "([^"]*)"$/ do |label,
   assert has_no_css?(%(table#configs th:contains("#{name}") ~ td button:contains("#{label}")))
 end
 
-
-Given /^(provider "[^\"]*") uses (Janrain|internal|Cas) authentication$/ do |provider, strategy|
+Given "{provider} uses {authentication_strategy} authentication" do |provider, strategy|
   settings = provider.settings
   settings.authentication_strategy = strategy.downcase
   settings.cas_server_url = "http://mamacit.as" if strategy.casecmp("cas").zero?

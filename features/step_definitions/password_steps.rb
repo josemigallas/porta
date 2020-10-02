@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 When /^(.*) in the request password reset form$/ do |action|
   within "form[action='#{provider_password_path}']" do
     step action
@@ -5,10 +7,10 @@ When /^(.*) in the request password reset form$/ do |action|
 end
 
 Given /^no user exists with an email of "(.*)"$/ do |email|
-  assert_nil User.find_by_email(email)
+  assert_nil User.find_by(email: email)
 end
 
-Then /^the password of (user "[^"]*") should not be "([^"]*)"$/ do |user, password|
+Then "the password of user {user} should not be {string}"  do |user, password|
   assert !user.authenticated?(password)
 end
 
@@ -22,9 +24,9 @@ When /^I follow the link found in the provider password reset email send to "([^
 end
 
 def visit_url_in_email(email, subject)
-  User.find_by_email!(email)
+  User.find_by!(email: email)
 
-  message = open_email(email, :with_subject => subject)
+  message = open_email(email, with_subject: subject)
 
   url = message.body.to_s.scan(/http.*/).first
   assert_not_nil url, 'URL not found in the email'
@@ -33,5 +35,5 @@ def visit_url_in_email(email, subject)
 end
 
 Then 'I should see the password confirmation error' do
-  %q{I should see error "doesn't match Password" for field "Password confirmation"}
+  %q(I should see error "doesn't match Password" for field "Password confirmation")
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def service_id_for_name(name)
-  page.find_by_id('apis').find('section', text: /#{name}/i)[:id][/\d+/]
+  page.find_by!(id: 'apis').find('section', text: /#{name}/i)[:id][/\d+/]
 end
 
 def service_for_name(name)
@@ -11,12 +11,12 @@ end
 
 def hits_for_name(name, opts = {})
   service_id = service_id_for_name(name)
-  page.find_by_id("dashboard-widget-service_id-#{service_id}service_hits", opts)
+  page.find_by!({ id: "dashboard-widget-service_id-#{service_id}service_hits" }, opts)
 end
 
 def top_traffic_for_name(name, opts = {})
   service_id = service_id_for_name(name)
-  page.find_by_id("dashboard-widget-service_id-#{service_id}service_top_traffic", opts)
+  page.find_by!({ id: "dashboard-widget-service_id-#{service_id}service_top_traffic" }, opts)
 end
 
 When(/^service "([^"]*)" is (folded|unfolded)$/) do |service_name, state|

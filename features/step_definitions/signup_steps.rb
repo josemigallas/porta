@@ -1,18 +1,20 @@
-Given /^(provider "[^"]*") conditions to allow signup are met$/ do |provider|
-  step %{provider "#{provider.org_name}" has multiple applications enabled}
+# frozen_string_literal: true
+
+Given "{provider} conditions to allow signup are met" do |provider|
+  step %(provider "#{provider.org_name}" has multiple applications enabled})
   #only one of these conditions seems to suffice, but we are using both (review!)
-  provider.first_service!.plans.create!(:name => 'Provider plan')
+  provider.first_service!.plans.create!(name: 'Provider plan')
 end
 
-Given /^provider "([^"]*)" has plans already ready for signups$/ do |org_name|
-  step %{a default service of provider "#{org_name}" has name "api"}
-  step %{a account plan "account_plan" of provider "#{org_name}"}
-  step %{a service plan "service_plan" for service "api" exists}
-  step %{an application plan "application_plan" of service "api"}
+Given "provider {string} has plans already ready for signups" do |org_name|
+  step %(a default service of provider "#{org_name}" has name "api")
+  step %(a account plan "account_plan" of provider "#{org_name}")
+  step %(a service plan "service_plan" for service "api" exists)
+  step %(an application plan "application_plan" of service "api")
 
-  step %{service plan "service_plan" is default}
-  step %{account plan "account_plan" is default}
-  step %{application plan "application_plan" is default}
+  step %(service plan "service_plan" is default)
+  step %(account plan "account_plan" is default)
+  step %(application plan "application_plan" is default)
 end
 
 When /^I fill in all required signup fields as "([^\"]*)"$/ do |buyer_name|
@@ -24,14 +26,14 @@ When /^I fill in all required signup fields as "([^\"]*)"$/ do |buyer_name|
 end
 
 When /^I fill in the invitation signup with email "([^"]*)"$/ do | email |
-  fill_in("Email", :with => email)
+  fill_in("Email", with: email)
   step %(I fill in the invitation signup as "#{email}")
 end
 
 When /^I fill in the invitation signup as "([^"]*)"$/ do |username|
-  fill_in("Username", :with => username)
-  fill_in("Password", :with => "supersecret")
-  fill_in("Password confirmation", :with => "supersecret")
+  fill_in("Username", with: username)
+  fill_in("Password", with: "supersecret")
+  fill_in("Password confirmation", with: "supersecret")
   click_button "Sign up"
 end
 
@@ -46,7 +48,7 @@ When /^new provider "([^"]*)" signs up and activates$/ do |name|
   step %(I fill in "Password confirmation" with "supersecret")
   step %(I press "Sign up")
 
-  assert_not_nil User.find_by_username(name)
+  assert_not_nil User.find_by!(username: name)
 
   step %(user "#{name}" activates himself)
 end
@@ -66,7 +68,7 @@ When /^I fill in the invalid signup fields$/ do
 end
 
 When /^I complete the signup process$/ do
-  step %{I fill in the signup fields as "bob"}
+  step %(I fill in the signup fields as "bob")
 end
 
 When /^I request the url of the signup page$/ do
@@ -74,7 +76,7 @@ When /^I request the url of the signup page$/ do
 end
 
 Then /^I should see the application plans selection$/ do
-  step %{I should see "Plans"}
+  step %(I should see "Plans")
 end
 
 When /^I select the "([^"]*)" application plan$/ do |plan|
@@ -83,11 +85,11 @@ end
 
 When /^(?:I|someone) (?:signup|signs up) with the email "([^"]*)"$/ do |email|
   step "I go to the sign up page"
-  fill_in "Username", :with => email.gsub(/[^\w]/, '-')
-  fill_in "Email", :with => email
-  fill_in "Organization/Group Name", :with => email.gsub(/[^\w]/, '-')
-  fill_in "Password", :with => "supersecret"
-  fill_in "Password confirmation", :with => "supersecret"
+  fill_in "Username", with: email.gsub(/[^\w]/, '-')
+  fill_in "Email", with: email
+  fill_in "Organization/Group Name", with: email.gsub(/[^\w]/, '-')
+  fill_in "Password", with: "supersecret"
+  fill_in "Password confirmation", with: "supersecret"
   click_button "Sign up"
 end
 
@@ -102,7 +104,7 @@ end
 #FIXME
 Then /^"([^\"]*)" should receive an email to activate the account$/ do |email_address|
   # pending
-  # step %{"#{email_address}" should receive an email with subject "Please confirm your email"}
+  # step %("#{email_address}" should receive an email with subject "Please confirm your email")
 end
 
 Then /^I should see the registration succeeded$/ do
@@ -110,7 +112,7 @@ Then /^I should see the registration succeeded$/ do
 end
 
 When /^I have a cas token in my session$/ do
-  res = stub :body => "yes\nlaurie", :code => 200
+  res = stub body: "yes\nlaurie", code: 200
   HTTPClient.expects(:get).with(anything).returns(res)
 
   page.driver.get '/session/create?ticket=token'
@@ -138,8 +140,7 @@ Then /^I should not see the password field$/ do
 end
 
 module ReadonlyField
-  include XPath::HTML
-  extend self
+  module_function
 
   def readonly_field(locator)
     xpath = descendant(:input)[attr(:readonly)] # rubocop:disable Style/Attr

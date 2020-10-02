@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Given(/^the master account allows signups$/) do
   master_account # Ensure that the master account exists, otherwise it creates it
   step 'provider "master" has multiple applications disabled'

@@ -1,22 +1,24 @@
+# frozen_string_literal: true
+
 # TODO: the second step wording reads better, replace the occurences of the first one
-Given(/^an invitation from (account "[^\"]*") sent to "([^\"]*)"$/) do |account, email|
+Given "an invitation from {account} sent to {string}" do |account, email|
   FactoryBot.create(:invitation, account: account, email: email)
 end
 
-Given(/^an invitation sent to "([^\"]*)" to join (account "[^\"]*")$/) do |address, account|
+Given "an invitation sent to {string} to join {account}" do |address, account|
   FactoryBot.create(:invitation, account: account, email: address)
 end
 
-Given(/^the following invitations from (account "[^\"]*") exist:$/) do |account, table|
+Given "the following invitations from {account} exist:" do |account, table|
   table.hashes.each do |row|
     invitation = FactoryBot.create(:invitation, account: account, email: row['Email'])
     invitation.accept! if row['State'] == 'accepted'
   end
 end
 
-Given(/^(?:an|the) invitation sent to "([^\"]*)" to join (account "[^\"]*") was accepted$/) do |address, account|
+Given "an/the invitation sent to {string} to join {account} was accepted" do |address, account|
   FactoryBot.create(:invitation, account: account, email: address)
-  invitation = account.invitations.find_by_email!(address)
+  invitation = account.invitations.find_by!(email: address)
   invitation.accept!
 end
 
@@ -32,22 +34,17 @@ When(/^I follow the link to signup provider "(.*?)" in the invitation sent to "(
 end
 
 # OPTIMIZE: this reads awful
-When(/^I press "([^"]*)" for an invitation from (account "[^"]*") for "([^"]*)"$/) do |label, account, email|
-  invitation = account.invitations.find_by_email!(email)
+When "I press {string} for an invitation from {account} for {string}" do |label, account, email|
+  invitation = account.invitations.find_by!(email: email)
   step %(I follow "#{label}" within "##{dom_id(invitation)}")
 end
 
 When(/^I resend the invitation to "([^\"]*)"$/) do |email|
   # these ivars are preparing for the expectation steps that follow
-  invitation = Invitation.find_by_email email
+  invitation = Invitation.find_by!(email: email)
   @last_emails_count = ActionMailer::Base.deliveries.size
   click_link "resend-invitation-#{invitation.id}"
 end
-
-# When(/^I resend the invitation to "([^\"]*)"$/) do |email|
-#   invitation = Invitation.find_by_email email
-#   find("form[action~=/admin\/account\/invitations\/#{invitation.id}\/resend/] input[type='submit']").click_button
-# end
 
 When(/^I send an invitation$/) do
   step 'I visit the page to invite users'
@@ -80,7 +77,7 @@ end
 # this compound When/Then steps are a result of the exception raising of the When step,
 # see the lambda use
 When(/^I request the url of the invitations of the partner "([^\"]*)"$/) do |org_name|
-  partner = Account.find_by_org_name org_name
+  partner = Account.find_by!(org_name: org_name)
   visit admin_buyers_account_invitations_path(partner)
 end
 
@@ -94,11 +91,11 @@ When(/^I send a provider invitation to "([^\"]*)"$/) do |address|
 end
 
 # TODO: agree on a wording for these 2 steps and leave only one
-Then(/^"([^"]*)" should receive an invitation to (account "[^"]*")$/) do |address, account|
+Then "{string} should receive an invitation to {account}" do |address, account|
   invitation_message_should_be_valid find_latest_email(to: address), account
 end
 
-Then(/^an invitation with the admin domain of (account "[^\"]*") should be sent to "([^\"]*)"$/) do |provider, address|
+Then "an invitation with the admin domain of {account} should be sent to {string}" do |provider, address|
   invitation_message_should_be_valid find_latest_email(to: address), provider, provider.self_domain
 end
 
@@ -133,21 +130,21 @@ end
 
 Then(/^I should see buttons to resend the invitations$/) do
   Invitation.all.each do |invitation|
-    assert page.has_css?('form', action: /admin\/account\/invitations\/#{invitation.id}\/resend/)
+    assert page.has_css?('form', action: %r{/admin\/account\/invitations\/#{invitation.id}\/resend/})
   end
 end
 
 Then(/^I should see the button to resend the invitation to "([^\"]*)"$/) do |email|
-  unaccepted_invitation = Invitation.find_by_email email
+  unaccepted_invitation = Invitation.find_by!(email: email)
   response.should have_tag("a#resend-invitation-#{unaccepted_invitation.id}")
 end
 
 Then(/^I should be able to resend the invitation to "([^\"]*)"$/) do |email|
-  assert have_css?("button#resend-invitation-#{Invitation.find_by_email(email).id}")
+  assert have_css?("button#resend-invitation-#{Invitation.find_by!(email: email).id}")
 end
 
 Then(/^I should not be able to resend the invitation to "([^\"]*)"$/) do |email|
-  assert have_no_css?("button#resend-invitation-#{Invitation.find_by_email(email).id}")
+  assert have_no_css?("button#resend-invitation-#{Invitation.find_by!(email: email).id}")
 end
 
 Then(/^I should see the invitation for "([^\"]*)" on top of the list$/) do |address|
@@ -162,7 +159,7 @@ Then(/^I should see an error saying an user with that email already exists$/) do
   assert has_content?('has been taken by another user')
 end
 
-Then(/^invitation from (account "[^\"]*") should be resent to "([^\"]*)"$/) do |account, address|
+Then "invitation from {account} should be resent to {string}" do |account, address|
   assert_equal @last_emails_count + 1, ActionMailer::Base.deliveries.length
   message = ActionMailer::Base.deliveries.last
   assert message.to.include?(address)

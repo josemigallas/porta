@@ -1,28 +1,29 @@
+# frozen_string_literal: true
+
 #TODO: is this a web step anyway?
 Given /^my remote address is "([^"]*)"$/ do |address|
   # This works only with RackTest driver.
-  page.driver.browser.options.merge!({:headers => {'REMOTE_ADDR' => address }})
+  page.driver.browser.options.merge!({ headers: { 'REMOTE_ADDR' => address } })
 end
 
 When /^I leave "([^\"]*)" blank$/ do |field|
-  fill_in field, :with => ''
+  fill_in field, with: ''
 end
 
 Then /^fields (.*) should be required$/ do |fields|
   fields.each do |field|
-    assert page.has_xpath?("//label[text()='#{field}']/abbr[@title='required']"),
-           "Field #{field} is not required"
+    assert page.has_xpath?("//label[text()='#{field}']/abbr[@title='required']"), "Field #{field} is not required"
   end
 end
 
 Then /^I should see link to (.+)$/ do |page_name|
   path = path_to(page_name)
-  assert page.all('a').any? { |node| matches_path?(node[:href], path) }
+  assert(page.all('a').any? { |node| matches_path?(node[:href], path) })
 end
 
 Then /^I should not see link to (.+)$/ do |page_name|
   path = path_to(page_name)
-  assert page.all('a').none? { |node| matches_path?(node[:href], path) }
+  assert(page.all('a').none? { |node| matches_path?(node[:href], path) })
 end
 
 #TODO: move this outta here!
@@ -65,16 +66,20 @@ Then /^I should see (?:|the )link "([^"]*)" containing "([^"]*)" in the URL$/ do
       return false unless selector[:href].include? param
     end
   end
-  assert page.has_css?('a', :text => label, &href_contain_params)
+  assert page.has_css?('a', text: label, &href_contain_params)
 end
 
-Then /^I should see (the |)link "([^"]*)"$/ do |_, label|
-  assert page.has_css?('a', :text => label)
+Then "I should see (the )link {string}" do |label|
+  assert page.has_css?('a', text: label)
+end
+
+Then "I should see (the )link {string}" do |label|
+  assert page.has_css?('a', text: label)
 end
 
 Then /^I should see link "([^"]*)" within "([^"]*)"$/ do |label, selector|
   within selector do
-    assert page.has_css?('a', :text => label)
+    assert page.has_css?('a', text: label)
   end
 end
 
@@ -84,7 +89,7 @@ end
 
 Then /^I should not see link "([^"]*)" within "([^"]*)"$/ do |label, selector|
   within selector do
-    assert has_no_css?('a', :text => label)
+    assert has_no_css?('a', text: label)
   end
 end
 
@@ -107,7 +112,7 @@ end
 
 Then /^the "([^"]*)" select should not contain "([^"]*)" option$/ do |label, text|
   select = find_field(label)
-  assert select.all('option', :text => text).empty?, %(The "#{label}" select should not contain "#{text}" option, but it does)
+  assert select.all('option', text: text).empty?, %(The "#{label}" select should not contain "#{text}" option, but it does)
 end
 
 Then /^the "([^"]*)" select should have "([^"]*)" selected$/ do |label, text|
@@ -117,18 +122,18 @@ Then /^the "([^"]*)" select should have "([^"]*)" selected$/ do |label, text|
 end
 
 Then /^the "([^"]*)" button should be hidden$/ do |label|
-  assert has_css?('button', :text => label, :visible => false)
+  assert has_css?('button', text: label, visible: false)
 end
 
 Then /^I should see the fields contain:$/ do |table|
   table.rows_hash.each do |field, value|
-    step %{the "#{field}" field should contain "#{value}"}
+    step %(the "#{field}" field should contain "#{value}")
   end
 end
 
 Then /^I should see the fields:$/ do |table|
   table.rows.each do |field|
-    step %{I should see field "#{field.first}"}
+    step %(I should see field "#{field.first}")
   end
 end
 
@@ -142,7 +147,7 @@ end
 
 Then /^I should not see the fields:$/ do |table|
   table.rows.each do |field|
-    step %{I should not see field "#{field.first}"}
+    step %(I should not see field "#{field.first}")
   end
 end
 
@@ -155,7 +160,7 @@ Then /^I should see error "([^"]*)" for field "([^"]*)"$/ do |error, field|
   # Not sure if this will work in the general case.
 
   field = find_field(field)
-  page.should have_css("##{field[:id]} ~ p", :text => error)
+  page.should have_css("##{field[:id]} ~ p", text: error)
 end
 
 Then /^I should see image "([^"]*)"$/ do |file|
@@ -193,7 +198,7 @@ Then /^I should see the following definition list:$/ do |table|
 end
 
 Then /^I should not see "([^"]*)" column$/ do |text|
-  assert has_no_css?('thead th', :text => text)
+  assert has_no_css?('thead th', text: text)
 end
 
 Then /^the page title should be "([^"]*)"$/ do |title|
@@ -201,7 +206,7 @@ Then /^the page title should be "([^"]*)"$/ do |title|
 end
 
 Then /^I should see "([^\"]*)" in bold$/ do |text|
-  assert has_css?('strong', :text => text)
+  assert has_css?('strong', text: text)
 end
 
 # this is being used only because of params[:type] in api/plans controller urls
@@ -226,7 +231,7 @@ end
 #     </tr>
 #   </table>
 Then /^(.*) within the "([^"]*)" row$/ do |action, content|
-  within(:xpath, "//*[text()[contains(.,'#{content}')]]/ancestor::tr") do
+  within(:xpath, "//*[text()[contains(.,'#{content}')]]/ancestor::tr")do
     step action
   end
 end
@@ -260,7 +265,7 @@ end
 
 Then /take a snapshot(| and show me the page)/ do |show_me|
   page.driver.render Rails.root.join("tmp/capybara/#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.png")
-  step %{show me the page} if show_me.present?
+  step %(show me the page) if show_me.present?
 end
 
 When /^I reload the page$/ do
@@ -291,9 +296,10 @@ When /^I visit "(.+?)"$/ do |path|
   visit path
 end
 
-
-And(/^I press "([^"]*)" inside the dropdown$/) do |name|
-  link = XPath::HTML.link_or_button(name)
+And "I press {string} inside the dropdown" do |name|
+  binding.pry
+  # link = XPath::HTML.link_or_button(name)
+  link = find(:link, text: name) || find(:button, text: name)
   toggle = find :xpath, XPath.generate{ |x| x.css('.dropdown')[link].next_sibling(:a) }.to_s
 
   toggle.click

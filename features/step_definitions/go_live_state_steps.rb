@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 When(/^I complete the "(.*?)" step$/) do |step|
   current_account.go_live_state.advance(step)
 end

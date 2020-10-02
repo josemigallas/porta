@@ -1,17 +1,19 @@
-Given /^I am logged in as (provider )?"([^\"]*)"$/ do |provider,username|
+# frozen_string_literal: true
+
+Given /^I am logged in as (provider )?"([^\"]*)"$/ do |provider, username|
   if provider
-    step %{I log in as provider "#{username}"}
+    step %(I log in as provider "#{username}")
   else
-    step %{I log in as "#{username}"}
+    step %(I log in as "#{username}")
   end
 end
 
 Given /^I am logged in as provider "([^\"]*)" on its admin domain$/ do |username|
-  step %{current domain is the admin domain of provider "#{username}"}
-  step %{I am logged in as provider "#{username}"}
+  step %(current domain is the admin domain of provider "#{username}")
+  step %(I am logged in as provider "#{username}")
 end
 
-Given /^I am logged in as (provider )?"([^\"]*)" on (\S+)$/ do |provider,username, domain|
+Given /^I am logged in as (provider )?"([^\"]*)" on (\S+)$/ do |provider, username, domain|
   # for some reason sometimes the domain is an array
   # In 1.9 Array#to_s is different so we need to handle it
   domain = domain.first if domain.is_a? Array
@@ -43,16 +45,17 @@ When /^I act as "([^"]*)"$/ do |username|
   act_as_user(username)
 end
 
-When /^I log in as (provider )?"([^"]*)" with password "([^"]*)"$/ do |provider,username, password|
+When /^I log in as (provider )?"([^"]*)" with password "([^"]*)"$/ do |provider, username, password|
   if provider
     step %(I try to log in as provider "#{username}" with password "#{password}")
   else
     step %(I try to log in as "#{username}" with password "#{password}")
   end
+  # Why is it supposed to be logged in when not provider?
   step %(I should be logged in as "#{username}")
 end
 
-When /^I log in as (provider )?"([^"]*)"$/ do |provider,username|
+When /^I log in as (provider )?"([^"]*)"$/ do |provider, username|
   if provider
     step %(I log in as provider "#{username}" with password "supersecret")
   else
@@ -60,15 +63,15 @@ When /^I log in as (provider )?"([^"]*)"$/ do |provider,username|
   end
 end
 
-When /^I log in as (provider )?"([^"]*)" on (\S+)$/ do |provider,username, domain|
+When /^I log in as (provider )?"([^"]*)" on (\S+)$/ do |provider, username, domain|
   # sometimes the domain is an array. In 1.9 Array#to_s is different
   # so we need to handle it
   domain = domain.first if domain.is_a? Array
 
   if provider
-    step %{I am logged in as provider "#{username}" on #{domain}}
+    step %(I am logged in as provider "#{username}" on #{domain})
   else
-    step %{I am logged in as "#{username}" on #{domain}}
+    step %(I am logged in as "#{username}" on #{domain})
   end
 end
 
@@ -77,7 +80,7 @@ When /^I log in as "([^"]*)" on the admin domain of (provider "[^"]*")$/ do |use
 end
 
 
-When /^I try to log in as (provider )?"([^"]*)"$/ do |provider,username|
+When /^I try to log in as (provider )?"([^"]*)"$/ do |provider, username|
   if provider
     step %(I try to log in as provider "#{username}" with password "supersecret")
   else
@@ -85,7 +88,7 @@ When /^I try to log in as (provider )?"([^"]*)"$/ do |provider,username|
   end
 end
 
-When /^I try to log in as (provider )?"([^"]*)" with password "([^"]*)"$/ do |provider,username, password|
+When /^I try to log in as (provider )?"([^"]*)" with password "([^"]*)"$/ do |provider, username, password|
   # TODO: simplify and DRY
   path = if provider
            provider_login_path
@@ -96,20 +99,21 @@ When /^I try to log in as (provider )?"([^"]*)" with password "([^"]*)"$/ do |pr
   visit path
 
   if provider
-    fill_in('Email or Username', :with => username)
+    fill_in('Email or Username', with: username)
   else
-    fill_in('Username or Email', :with => username)
+    fill_in('Username or Email', with: username)
   end
-  fill_in('Password', :with => password)
+  fill_in('Password', with: password)
   click_button('Sign in')
 end
 
 When /^I fill in the "([^"]*)" login data$/ do |username|
-  fill_in('Username or Email', :with => username)
-  fill_in('Password', :with => "supersecret")
+  fill_in('Username or Email', with: username)
+  fill_in('Password', with: "supersecret")
   click_button('Sign in')
 end
 
+# FIXME: failing
 Then /^I should be logged in as "([^"]*)"$/ do |username|
   message = "Expected #{username} to be logged in, but is not"
   assert has_content?(/Signed (?:in|up) successfully/i), message
@@ -141,7 +145,7 @@ When /^I am not logged in$/ do
 end
 
 Then /^I should not be logged in as "([^"]*)"$/ do |username|
-  assert has_no_css?('#user_widget .username', :text => username)
+  assert has_no_css?('#user_widget .username', text: username)
 end
 
 Then /^I should not be logged in$/ do

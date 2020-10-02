@@ -36,6 +36,24 @@ ParameterType(
   transformer: ->(version) { version }
 )
 
+ParameterType(
+  name: 'page',
+  regexp: /page "([^\"]*)"/,
+  transformer: ->(title) { Page.find_by!(title: title) }
+)
+
+ParameterType(
+  name: 'time_period',
+  regexp: /(second|minute|hour|day|week|month|year)s?/,
+  transformer: ->(period) { period.to_sym }
+)
+
+ParamterType(
+  name: 'regexp',
+  regexp: %r{\/([^\/]*)\/},
+  transformer: ->(r) { Regexp.new(regexp, Regexp::IGNORECASE) }
+)
+
 # Plans
 
 ParameterType(
@@ -128,25 +146,18 @@ ParameterType(
 ParameterType(
   name: 'cms_page',
   type: CMS::Page,
-  regexp: /^"(.+?)"$/i,
+  regexp: /CMS Page "(.+?)"/,
   transformer: ->(path) { CMS::Page.find_by!(path: path) }
 )
 
 ParameterType(
   name: 'cms_partial',
   type: CMS::Partial,
-  regexp: /^"(.+?)"$/i,
+  regexp: /CMS Partial "(.+?)"/,
   transformer: ->(path) { CMS::Partial.find_by!(system_name: path) }
 )
 
 # CMS
-
-# ParameterType(
-#   name: 'page',
-#   type: Page,
-#   regexp: /^"([^\"]*)"$/,
-#   transformer: ->(title) { Page.find_by!(title: title) }
-# )
 
 ParameterType(
   name: 'page of provider',
@@ -167,8 +178,8 @@ ParameterType(
 )
 
 ParameterType(
-  name: 'section of provider',
-  regexp: /^section "([^\"]*)" of provider "([^\"]*)"$/,
+  name: 'section_of_provider',
+  regexp: /section "([^\"]*)" of provider "([^\"]*)"/,
   transformer: ->(name, provider_name) do
     provider = Account.providers.readonly(false).find_by!(org_name: provider_name)
     provider.provided_sections.find_by!(title: name)
@@ -218,8 +229,8 @@ ParameterType(
 )
 
 ParameterType(
-  name: 'last post under topic',
-  regexp: /^the last post under topic "([^"]*)"$/,
+  name: 'the_last_post_under_topic',
+  regexp: /the last post under topic "([^"]*)"/,
   transformer: ->(title) { Topic.find_by!(title: title).posts.last }
 )
 
@@ -266,6 +277,12 @@ ParameterType(
   type: Plan,
   regexp: /plan "([^"]*)"/,
   transformer: ->(name) { Plan.find_by!(name: name) }
+)
+
+ParameterType(
+  name: 'plan_permission',
+  regexp: /directly|only with credit card|by request|with credit card required/,
+  transformer: ->(p) { change_plan_permission_to_sym(p) }
 )
 
 ParameterType(
@@ -348,8 +365,8 @@ ParameterType(
 )
 
 ParameterType(
-  name: 'email template',
-  regexp: /^email template "(.+?)"$/,
+  name: 'email_template',
+  regexp: /email template "(.+?)"$/,
   transformer: ->(name) { CMS::EmailTemplate.find_by!(system_name: name) }
 )
 
@@ -443,7 +460,7 @@ ParameterType(
 
 ParameterType(
   name: 'public',
-  regexp: /public|private/,
+  regexp: /public|private|restricted/,
   transformer: ->(public) { public == 'public'}
 )
 
@@ -495,8 +512,8 @@ ParameterType(
   transformer: ->(value) { value == 'should see' }
 )
 
-# ParamterType(
-#   name: 'should',
-#   regexp: /should|should not|shouldn't/,
-#   transformer: ->(value) { value == 'should' }
-# )
+ParameterType(
+  name: 'valid',
+  regexp: /valid|invalid/,
+  transformer: ->(value) { value == 'valid' }
+)
