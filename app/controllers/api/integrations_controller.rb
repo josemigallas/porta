@@ -4,7 +4,7 @@ class Api::IntegrationsController < Api::BaseController
   before_action :find_service
   before_action :find_proxy
   before_action :authorize
-  before_action :hide_for_apiap, only: :edit
+  before_action :hide, only: :edit
   before_action :find_registry_policies, only: %i[edit update]
 
   activate_menu :serviceadmin, :integration, :configuration
@@ -32,7 +32,7 @@ class Api::IntegrationsController < Api::BaseController
       flash[:notice] = flash_message(:update_success, environment: environment)
       update_mapping_rules_position
 
-      return redirect_to admin_service_integration_path(@service) if apiap?
+      return redirect_to admin_service_integration_path(@service)
 
       if @proxy.send_api_test_request!
         api_backend = @proxy.api_backend
@@ -51,7 +51,7 @@ class Api::IntegrationsController < Api::BaseController
       flash.now[:error] = flash_message(:update_error)
       @api_test_form_error = true
 
-      render_edit_or_show
+      render_show
     end
   end
 
@@ -146,7 +146,7 @@ class Api::IntegrationsController < Api::BaseController
 
     @last_message_bus_id = nil # don't want MessageBus showing flash message
 
-    render_edit_or_show status: :conflict
+    render_show status: :conflict
   end
 
   def flash_message(key, opts = {})
@@ -157,9 +157,9 @@ class Api::IntegrationsController < Api::BaseController
     if @proxy.update_attributes(proxy_params)
       update_mapping_rules_position
       flash[:notice] = flash_message(:proxy_pro_update_sucess)
-      redirect_to_edit_or_show
+      redirect_to :show
     else
-      render_edit_or_show
+      render_show
     end
   end
 
@@ -177,7 +177,7 @@ class Api::IntegrationsController < Api::BaseController
       @api_test_form_error = true
     end
 
-    render_edit_or_show
+    render_show
   end
 
   def edit_path
@@ -204,8 +204,8 @@ class Api::IntegrationsController < Api::BaseController
     proxy.oidc? && ZyncWorker.config.message_bus
   end
 
-  def hide_for_apiap
-    raise ActiveRecord::RecordNotFound if apiap?
+  def hide
+    raise ActiveRecord::RecordNotFound
   end
 
   def authorize
@@ -251,7 +251,7 @@ class Api::IntegrationsController < Api::BaseController
       basic_fields << :jwt_claim_with_client_id_type
     end
 
-    basic_fields << { backend_api_configs_attributes: %i[_destroy id path] } if provider_can_use?(:api_as_product)
+    basic_fields << { backend_api_configs_attributes: %i[_destroy id path] }
 
     params.require(:proxy).permit(*basic_fields)
   end
@@ -264,11 +264,7 @@ class Api::IntegrationsController < Api::BaseController
     @proxy.apicast_configuration_driven ? admin_service_integration_path(@service) : edit_admin_service_integration_path(@service)
   end
 
-  def render_edit_or_show(opts = {})
-    render (apiap? ? :show : :edit), opts
-  end
-
-  def redirect_to_edit_or_show
-    redirect_to (apiap? ? :show : edit_path)
+  def render_show(opts = {})
+    render :show, opts
   end
 end

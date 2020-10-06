@@ -10,11 +10,10 @@ import type { Api, Menu } from 'Types'
 
 type Props = {
   activeMenu: Menu,
-  currentApi: Api,
-  apiap?: boolean
+  currentApi: Api
 }
 
-const ActiveMenuTitle = ({ activeMenu, currentApi, apiap = false }: Props) => {
+const ActiveMenuTitle = ({ activeMenu, currentApi }: Props) => {
   const getIconAndText: () => [string, string] = () => {
     switch (activeMenu) {
       case 'dashboard':
@@ -39,7 +38,7 @@ const ActiveMenuTitle = ({ activeMenu, currentApi, apiap = false }: Props) => {
 
       case 'serviceadmin':
       case 'monitoring':
-        return apiap ? ['fa-cubes', `Product: ${currentApi.name}`] : ['fa-puzzle-piece', `Api: ${currentApi.name}`]
+        return ['fa-cubes', `Product: ${currentApi.name}`]
 
       case 'backend_api':
         return ['fa-cube', `Backend: ${currentApi.name}`]

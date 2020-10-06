@@ -197,10 +197,6 @@ class Proxy < ApplicationRecord
 
     def default_production_endpoint; end
 
-    def default_staging_endpoint_apiap; end
-
-    def default_production_endpoint_apiap; end
-
     protected
 
     delegate :provider, to: :service
@@ -240,27 +236,9 @@ class Proxy < ApplicationRecord
       production_endpoint = proxy.apicast_configuration_driven ? :apicast_production_endpoint : :hosted_proxy_endpoint
       generate(production_endpoint)
     end
-
-    def default_staging_endpoint_apiap
-      default_staging_endpoint
-    end
-
-    def default_production_endpoint_apiap
-      default_production_endpoint
-    end
   end
 
-  # @return DeploymentStrategy
   def deployment_strategy
-    strategy = case deployment_option
-               when 'self_managed' then SelfManagedAPIcast
-               when 'hosted' then HostedAPIcast
-               end
-
-    strategy.try!(:new, self)
-  end
-
-  def deployment_strategy_apiap
     HostedAPIcast.new self
   end
 
@@ -475,9 +453,6 @@ class Proxy < ApplicationRecord
 
   delegate :default_production_endpoint, :default_staging_endpoint,
            to: :deployment_strategy, allow_nil: true
-
-  delegate :default_production_endpoint_apiap, :default_staging_endpoint_apiap,
-           to: :deployment_strategy_apiap, allow_nil: true
 
   delegate :backend_version, to: :service, prefix: true
 

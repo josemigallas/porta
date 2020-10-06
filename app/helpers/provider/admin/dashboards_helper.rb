@@ -49,7 +49,7 @@ module Provider::Admin::DashboardsHelper
     safe_wrap_with_parenthesis(dashboard_collection_link(singular_name, collection, path, options))
   end
 
-  def dashboard_apiap_tab_label(html_for, singular_name, collection, options = {})
+  def dashboard_tab_label(html_for, singular_name, collection, options = {})
     label_text = pluralize(number_to_human(collection.size), singular_name, options.fetch(:plural, nil))
     icon_name = options[:icon_name]
     label_class = css_class(

@@ -41,8 +41,6 @@ class Api::ServicesControllerTest < ActionController::TestCase
 
   test 'settings with finance allowed' do
     Account.any_instance.stubs(:provider_can_use?).returns(true)
-    Account.any_instance.stubs(:provider_can_use?).with(:api_as_product).returns(false | true)
-    rolling_update(:api_as_product, enabled: false)
 
     @provider.settings.finance.allow
 

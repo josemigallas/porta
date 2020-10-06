@@ -2,8 +2,8 @@ import React from 'react'
 import { mount } from 'enzyme'
 import { ContextSelector } from 'Navigation/components/ContextSelector'
 
-function getWrapper (apis = [], audienceLink, apiap = true) {
-  return mount(<ContextSelector apis={apis} audienceLink={audienceLink} apiap={apiap} />)
+function getWrapper (apis = [], audienceLink) {
+  return mount(<ContextSelector apis={apis} audienceLink={audienceLink} />)
 }
 
 let contextSelector
@@ -152,15 +152,5 @@ describe('When there are many services', () => {
       .map(link => [link.text(), link.find('i').prop('className')])
     expect(apiIconsClassNames)
       .toEqual([ ['api 0', 'fa fa-cubes'], ['api 1', 'fa fa-cubes'], ['api 2', 'fa fa-cube'] ])
-  })
-
-  it('should render the correct icons when apiap is disabled', () => {
-    contextSelector.unmount()
-    contextSelector = getWrapper(apis, audienceLink, false)
-    const puzzleApiIcons = contextSelector.find('.PopNavigation-results .PopNavigation-link .fa-puzzle-piece')
-    expect(puzzleApiIcons.length).toEqual(3)
-
-    const giftApiIcons = contextSelector.find('.PopNavigation-results .PopNavigation-link .fa-gift')
-    expect(giftApiIcons.length).toEqual(0)
   })
 })

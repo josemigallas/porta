@@ -1,4 +1,4 @@
-// TODO: remove this pack when apiap rolling updated is removed
+// TODO: remove this pack when apiap rolling updated is removed... or is it used in Master?
 import { ApiFilterWrapper as ApiFilter } from 'Dashboard/components/ApiFilter'
 
 import { safeFromJsonString } from 'utilities/json-utils'

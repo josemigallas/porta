@@ -57,22 +57,11 @@ class DeleteServiceHierarchyWorkerTest < ActiveSupport::TestCase
 
     attr_reader :service, :backend_api, :backend_api_config
 
-    test 'does not destroy the backend apis for a provider with the RU api as product' do
-      rolling_update(:api_as_product, enabled: true)
-
+    test 'does not destroy the backend apis for a provider' do
       perform_enqueued_jobs { DeleteServiceHierarchyWorker.perform_now(service.reload) }
 
       refute BackendApiConfig.exists?(backend_api_config.id), "BackendApiConfig ##{backend_api_config.id} should have been destroyed"
       assert BackendApi.exists?(backend_api.id), "BackendApi ##{backend_api.id} should have not been destroyed"
-    end
-
-    test 'destroys backend apis for a provider without the RU api as product' do
-      rolling_update(:api_as_product, enabled: false)
-
-      perform_enqueued_jobs { DeleteServiceHierarchyWorker.perform_now(service.reload) }
-
-      refute BackendApiConfig.exists?(backend_api_config.id), "BackendApiConfig ##{backend_api_config.id} should have been destroyed"
-      refute BackendApi.exists?(backend_api.id), "BackendApi ##{backend_api.id} should have been destroyed"
     end
   end
 end
