@@ -5,7 +5,7 @@ import type { Feature, AdminSection } from 'Users/types'
 const FEATURE_NAMES: { [feature: Feature]: string } = {
   portal: 'Create, read, update, and delete content & code of the <strong>developer portal</strong>',
   finance: 'Setup and manage <strong>customer billing</strong>',
-  settings: 'Update <strong>feature settings</strong>',
+  settings: 'Update <strong>settings pages</strong>',
   partners: 'Create, read, update and delete:',
   monitoring: 'Access & query <strong>analytics</strong> of:',
   plans: 'Create, read, update and delete:',
