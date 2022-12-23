@@ -4,7 +4,7 @@ namespace :licenses do  # rubocop:disable Metrics/BlockLength
   report_path = Rails.root.join('doc/licenses/licenses.xml')
 
   desc 'Generates a report with the dependencies and their licenses'
-  task report: :environment do
+  task :report do
     warn 'Generating report...'
     license_finder_report(report_path)
 
@@ -13,7 +13,7 @@ namespace :licenses do  # rubocop:disable Metrics/BlockLength
   end
 
   desc 'Check license compliance of dependencies'
-  task compliance: :environment do
+  task :compliance do
     warn 'Checking license action items...'
     unless cli.action_items
       warn '*** License compliance test failed  ***'
