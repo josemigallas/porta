@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import type { ExecuteData } from 'Types/SwaggerTypes'
+
 declare module '*.svg' {
   // eslint-disable-next-line @typescript-eslint/no-require-imports -- TODO: let's try to remove this
   import React = require('react')
@@ -53,6 +55,10 @@ declare module '@patternfly/quickstarts/dist/quickstarts-full.es' {
     hint: string;
     title: string;
   }): React.ReactElement
+}
+
+declare module 'swagger-client/es/execute' {
+  export function execute (req: ExecuteData): unknown
 }
 
 declare let __webpack_public_path__: string
