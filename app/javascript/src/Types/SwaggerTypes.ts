@@ -66,5 +66,3 @@ export interface BackendApiReportBody {
   service_id?: string;
   transactions?: (BackendApiTransaction | string)[];
 }
-
-export type BackendApiReportFormData = Record<string, string>

@@ -34,11 +34,10 @@ const body: BackendApiReportBody = {
   ]
 }
 
-describe('transformRequestBody', () => {
+describe('transformReportRequestBody', () => {
   it('transforms the transactions array when transaction is an object', () => {
     const result = transformReportRequestBody(body)
 
-    console.log(result)
     expect(result).toEqual({
       service_token: 'token',
       service_id: '123',

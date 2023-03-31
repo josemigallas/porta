@@ -46,15 +46,15 @@ type BodyValue = boolean | number | string | { [key: string]: BodyValue }
  * }
  * @param object
  */
-export const objectToFormData = (object: BodyValue): Record<string, string> => {
-  const buildFormData = (formData: Record<string, string>, data: BodyValue, parentKey?: string) => {
+export const objectToFormData = (object: BodyValue): Record<string, boolean | number | string> => {
+  const buildFormData = (formData: Record<string, boolean | number | string>, data: BodyValue, parentKey?: string) => {
     if (data && typeof data === 'object') {
       Object.keys(data).forEach((key: string) => {
         buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
       })
     } else {
       if (parentKey) {
-        formData[parentKey] = data ? encodeURIComponent(data) : ''
+        formData[parentKey] = data ? data : ''
       }
     }
   }
@@ -74,7 +74,7 @@ export const objectToFormData = (object: BodyValue): Record<string, string> => {
  *    'transactions[0][usage][hits]': 1
  * @param body BackendApiReportBody
  */
-export const transformReportRequestBody = (body: BackendApiReportBody): Record<string, string> => {
+export const transformReportRequestBody = (body: BackendApiReportBody): Record<string, boolean | number | string> => {
   if (Array.isArray(body.transactions)) {
     body.transactions = body.transactions.map(transaction => {
       switch (typeof transaction) {
