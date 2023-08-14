@@ -306,3 +306,46 @@ $error-color: #c00;
     list-style-position: inside;
   }
 }
+
+// #policy-edit-modal {
+//   .pf-c-modal-box__footer button.pf-m-danger {
+//     margin: 0 0 0 48px;
+//   }
+
+//   // Custom array field buttons
+//   i.glyphicon {
+//     display: none;
+//   }
+
+//   // .btn-add::after {
+//   //   content: 'Add';
+//   // }
+
+//   button.btn.array-item-move-up {
+//     // @extend .pf-c-button, .pf-m-secondary;
+
+//     &.array-item-move-up::after {
+//       font-family: "Font Awesome 5 Free";
+//       content: "\f30c"; // fa-long-arrow-alt-up
+//     }
+//   }
+
+//   button.btn.array-item-move-down {
+//     // @extend .pf-c-button, .pf-m-secondary;
+
+//     &.array-item-move-down::after {
+//       font-family: "Font Awesome 5 Free";
+//       content: "\f309"; // fa-long-arrow-alt-down
+//     }
+//   }
+
+
+//   button.btn.array-item-remove {
+//     // @extend .pf-c-button, .pf-m-danger;
+
+//     &.array-item-remove::after {
+//       font-family: "Font Awesome 5 Free";
+//       content: "\f00d"; // fa-times
+//     }
+//   }
+// }

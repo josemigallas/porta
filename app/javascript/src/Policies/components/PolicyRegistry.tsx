@@ -1,6 +1,14 @@
+import {
+  CardHeader,
+  CardActions,
+  Button,
+  CardTitle,
+  CardBody
+} from '@patternfly/react-core'
+import TimesIcon from '@patternfly/react-icons/dist/js/icons/times-icon'
+
 import { isNotApicastPolicy } from 'Policies/util'
 import { PolicyTile } from 'Policies/components/PolicyTile'
-import { HeaderButton } from 'Policies/components/HeaderButton'
 
 import type { RegistryPolicy, ThunkAction } from 'Policies/types'
 
@@ -17,19 +25,25 @@ const PolicyRegistry: React.FunctionComponent<Props> = ({
   actions: { addPolicy, closePolicyRegistry }
 }) => (
   <section className="PolicyRegistry">
-    <header>
-      <h2>Select a Policy</h2>
-      <HeaderButton type="cancel" onClick={closePolicyRegistry}>
-        Cancel
-      </HeaderButton>
-    </header>
-    <ul className="list-group">
-      {items.filter(isNotApicastPolicy).map(p => (
-        <li key={p.name} className="Policy">
-          <PolicyTile policy={p} title="Add this Policy" onClick={() => addPolicy(p)} />
-        </li>
-      ))}
-    </ul>
+    <CardHeader>
+      <CardActions>
+        <Button icon={<TimesIcon />} variant="link" onClick={closePolicyRegistry}>
+            Cancel
+        </Button>
+      </CardActions>
+      <CardTitle>
+          Select a policy
+      </CardTitle>
+    </CardHeader>
+    <CardBody>
+      <ul className="list-group">
+        {items.filter(isNotApicastPolicy).map(p => (
+          <li key={p.name} className="Policy" onClick={() => addPolicy(p)}>
+            <PolicyTile policy={p} title="Add this Policy" />
+          </li>
+        ))}
+      </ul>
+    </CardBody>
   </section>
 )
 

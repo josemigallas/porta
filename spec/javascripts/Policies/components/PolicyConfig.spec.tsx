@@ -1,9 +1,9 @@
 import { mount } from 'enzyme'
 
-import { PolicyConfig } from 'Policies/components/PolicyConfig'
+import { PolicyConfig } from 'Policies/components/PolicyEditModal'
 import { HeaderButton } from 'Policies/components/HeaderButton'
 
-import type { Props } from 'Policies/components/PolicyConfig'
+import type { Props } from 'Policies/components/PolicyEditModal'
 import type { ChainPolicy } from 'Policies/types'
 
 describe('PolicyConfig Component', () => {

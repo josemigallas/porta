@@ -1,9 +1,9 @@
 
 import { mount } from 'enzyme'
 
-import { PolicyList } from 'Policies/components/PoliciesWidget'
+import { PoliciesDataList } from 'Policies/components/PoliciesDataList'
 
-import type { Props } from 'Policies/components/PoliciesWidget'
+import type { Props } from 'Policies/components/PoliciesDataList'
 
 it.todo('test PolicyWidget')
 
@@ -25,6 +25,6 @@ it('should render PolicyList', () => {
     boundActionCreators: {}
   } as any
 
-  const wrapper = mount(<PolicyList {...props} />)
+  const wrapper = mount(<PoliciesDataList {...props} />)
   expect(wrapper.exists()).toEqual(true)
 })

@@ -2,8 +2,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import * as actions from 'Policies/actions'
-import { PolicyConfig } from 'Policies/components/PolicyConfig'
-import { PolicyChain } from 'Policies/components/PolicyChain'
+import { PolicyEditModal } from 'Policies/components/PolicyEditModal'
+import { PolicyChain } from 'Policies/components/Policy'
 import { PolicyRegistry } from 'Policies/components/PolicyRegistry'
 import { PolicyChainHiddenInput } from 'Policies/components/PolicyChainHiddenInput'
 import { isPolicyChainChanged } from 'Policies/util'
@@ -11,6 +11,8 @@ import { isPolicyChainChanged } from 'Policies/util'
 import type { FunctionComponent } from 'react'
 import type { Dispatch } from 'redux'
 import type { ChainPolicy, IPoliciesActions, RegistryPolicy, State, UIState } from 'Policies/types'
+
+import 'Policies/styles/policies.scss'
 
 interface Props {
   registry: RegistryPolicy[];
@@ -33,7 +35,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   boundActionCreators: bindActionCreators(actions, dispatch)
 })
 
-const PolicyList: FunctionComponent<Props> = ({
+const PoliciesDataList: FunctionComponent<Props> = ({
   registry,
   chain,
   originalChain,
@@ -69,19 +71,27 @@ const PolicyList: FunctionComponent<Props> = ({
   }
 
   return (
-    <div className="PoliciesWidget">
-      {ui.chain && <PolicyChain actions={chainActions} chain={chain} />}
+    // <div className="PoliciesWidget">
+    //   {ui.chain && <PolicyChain actions={chainActions} chain={chain} />}
+    <div>
+      {(ui.chain || ui.policyConfig) && <PolicyChain actions={chainActions} chain={chain} />}
       {ui.registry && <PolicyRegistry actions={policyRegistryActions} items={registry} />}
-      {ui.policyConfig && <PolicyConfig actions={policyConfigActions} policy={policyConfig} />}
+
       <PolicyChainHiddenInput policies={chain} />
+
+      <PolicyEditModal
+        actions={policyConfigActions}
+        isOpen={ui.policyConfig}
+        policy={policyConfig}
+      />
     </div>
   )
 }
 
-const PoliciesWidget = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PolicyList)
+)(PoliciesDataList)
 
 export type { Props }
-export { PoliciesWidget as default, PolicyList }
+export { PoliciesDataList }

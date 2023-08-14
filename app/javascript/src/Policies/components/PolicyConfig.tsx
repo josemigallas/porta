@@ -1,8 +1,15 @@
 import Form from 'react-jsonschema-form'
-import { Button } from '@patternfly/react-core'
+import {
+  Button,
+  CardActions,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@patternfly/react-core'
+import TimesIcon from '@patternfly/react-icons/dist/js/icons/times-icon'
 
 import { isNotApicastPolicy } from 'Policies/util'
-import { HeaderButton } from 'Policies/components/HeaderButton'
 
 import type { ThunkAction, ChainPolicy } from 'Policies/types'
 import type { UpdatePolicyConfigAction } from 'Policies/actions/PolicyConfig'
@@ -39,45 +46,55 @@ const PolicyConfig: React.FunctionComponent<Props> = ({
 
   return (
     <section className="PolicyConfiguration">
-      <header>
-        <h2>Edit Policy</h2>
-        <HeaderButton type="cancel" onClick={cancel}>
-          Cancel
-        </HeaderButton>
-      </header>
-      <h2 className="PolicyConfiguration-name">{humanName}</h2>
-      <p className="PolicyConfiguration-version-and-summary">
-        {`${version} - ${summary || ''}`}
-      </p>
-      <p className="PolicyConfiguration-description">{description}</p>
-      {isPolicyVisible && (
-        <label className="Policy-status" htmlFor="policy-enabled">
-          <input
-            checked={enabled}
-            id="policy-enabled"
-            name="policy-enabled"
-            type="checkbox"
-            onChange={togglePolicy}
-          />Enabled
-        </label>
-      )}
-      {isPolicyVisible && (
-        <Form
-          className="PolicyConfiguration-form"
-          formData={data}
-          schema={configuration}
-          onSubmit={onSubmit(policy)}
-        >
-          <Button className="btn-info" type="submit">Update Policy</Button>
-        </Form>
-      )}
+      <CardHeader>
+        <CardActions>
+          <Button icon={<TimesIcon />} variant="link" onClick={cancel}>
+            Cancel
+          </Button>
+        </CardActions>
+        <CardTitle>
+          Edit Policy
+        </CardTitle>
+      </CardHeader>
+      <CardBody>
+        <div className="pf-c-content">
+          <h2 className="PolicyConfiguration-name">{humanName}</h2>
+          <p className="PolicyConfiguration-version-and-summary">
+            {`${version} - ${summary || ''}`}
+          </p>
+          <p className="PolicyConfiguration-description">{description}</p>
+        </div>
+        {isPolicyVisible && (
+          <label className="Policy-status" htmlFor="policy-enabled">
+            <input
+              checked={enabled}
+              id="policy-enabled"
+              name="policy-enabled"
+              type="checkbox"
+              onChange={togglePolicy}
+            />{' Enabled'}
+          </label>
+        )}
+        {isPolicyVisible && (
+          <Form
+            className="PolicyConfiguration-form"
+            formData={data}
+            schema={configuration}
+            onSubmit={onSubmit(policy)}
+          >
+            <Button className="btn-info" type="submit">Update Policy</Button>
+          </Form>
+        )}
+      </CardBody>
       {removable && (
-        <Button
-          variant="danger"
-          onClick={remove}
-        >
-          Remove
-        </Button>
+        <CardFooter>
+          <Button
+            variant="danger"
+            onClick={remove}
+          >
+            Remove
+          </Button>
+        </CardFooter>
       )}
     </section>
   )
