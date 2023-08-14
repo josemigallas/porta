@@ -13,7 +13,6 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 
   // Components
   @import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins/_buttons.scss";
-  @import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins/_forms.scss";
 
   // Skins
   @import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins/_background-variant.scss";
@@ -30,7 +29,6 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
   // Core CSS
   @import "~bootstrap-sass/assets/stylesheets/bootstrap/_type.scss";
   @import "~bootstrap-sass/assets/stylesheets/bootstrap/_grid.scss";
-  @import "~bootstrap-sass/assets/stylesheets/bootstrap/_forms.scss";
   @import "~bootstrap-sass/assets/stylesheets/bootstrap/_buttons.scss";
 
   // Components
@@ -138,15 +136,6 @@ $error-color: #c00;
       display: block;
       width: 100%;
       margin-bottom: 2rem;
-    }
-
-    &-form {
-      clear: both;
-
-      & > .form-group {
-        padding-bottom: 2rem;
-        border-bottom: 1px dashed $subtleColor;
-      }
     }
 
     .btn-group {
